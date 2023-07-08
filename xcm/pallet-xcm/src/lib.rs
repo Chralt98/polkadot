@@ -1158,6 +1158,7 @@ impl<T: Config> Pallet<T> {
 					BuyExecution { fees, weight_limit: Limited(Weight::zero()) },
 					DepositAsset { assets: Wild(AllCounted(max_assets)), beneficiary },
 				]);
+				println!("REMOTE MESSAGE: {:?}", remote_message);
 				// use local weight for remote message and hope for the best.
 				let remote_weight = T::Weigher::weight(&mut remote_message)
 					.map_err(|()| Error::<T>::UnweighableMessage)?;
@@ -1175,6 +1176,7 @@ impl<T: Config> Pallet<T> {
 		let weight =
 			T::Weigher::weight(&mut message).map_err(|()| Error::<T>::UnweighableMessage)?;
 		let hash = message.using_encoded(sp_io::hashing::blake2_256);
+		println!("MESSAGE: {:?}", message);
 		let outcome =
 			T::XcmExecutor::execute_xcm_in_credit(origin_location, message, hash, weight, weight);
 		Self::deposit_event(Event::Attempted(outcome));
